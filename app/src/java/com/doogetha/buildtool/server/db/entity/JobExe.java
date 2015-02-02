@@ -21,7 +21,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "JobExe.findByUnit", query = "SELECT b FROM JobExe b WHERE b.unit=:unit ORDER BY b.lastmodified DESC"),
-    @NamedQuery(name = "JobExe.findByUnitAndName", query = "SELECT b FROM JobExe b WHERE b.unit=:unit AND b.name=:name")})
+    @NamedQuery(name = "JobExe.findByUnitAndName", query = "SELECT b FROM JobExe b WHERE b.unit=:unit AND b.name=:name"),
+    @NamedQuery(name = "JobExe.findByUnitAndState", query = "SELECT b FROM JobExe b WHERE b.unit=:unit AND b.state=:state")})
 public class JobExe implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -81,8 +82,8 @@ public class JobExe implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += name.hashCode();
-        hash += unit.hashCode();
+        hash += name != null ? name.hashCode() : 0;
+        hash += unit != null ? unit.hashCode() : 0;
         return hash;
     }
 

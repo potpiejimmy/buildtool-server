@@ -14,6 +14,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 /**
  *
@@ -24,11 +25,15 @@ import javax.ws.rs.Produces;
 public class JobExeListResource {
     
     @PersistenceContext(unitName = "buildtool-warPU")
-    EntityManager em;
+    private EntityManager em;
 
     @GET
     @Produces({"application/json"})
-    public List<JobExe> getJobList(@PathParam("unit") String unit) {
-        return em.createNamedQuery("JobExe.findByUnit", JobExe.class).setParameter("unit", unit).getResultList();
+    public List<JobExe> getJobList(@PathParam("unit") String unit, @QueryParam("state") String filterState) {
+        if (filterState != null) {
+            return em.createNamedQuery("JobExe.findByUnitAndState", JobExe.class).setParameter("unit", unit).setParameter("state", filterState).getResultList();
+        } else {
+            return em.createNamedQuery("JobExe.findByUnit", JobExe.class).setParameter("unit", unit).getResultList();
+        }
     }
 }
