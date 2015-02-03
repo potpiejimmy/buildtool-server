@@ -28,7 +28,7 @@ public class JobExeListResource {
     private EntityManager em;
 
     @GET
-    @Produces({"application/json"})
+    @Produces({"application/xml","application/json"})
     public List<JobExe> getJobList(@PathParam("unit") String unit, @QueryParam("state") String filterState) {
         if (filterState != null) {
             return em.createNamedQuery("JobExe.findByUnitAndState", JobExe.class).setParameter("unit", unit).setParameter("state", filterState).getResultList();
