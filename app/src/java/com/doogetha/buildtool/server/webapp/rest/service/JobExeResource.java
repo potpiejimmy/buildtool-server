@@ -6,11 +6,10 @@
 package com.doogetha.buildtool.server.webapp.rest.service;
 
 import com.doogetha.buildtool.server.db.entity.JobExe;
-import java.util.List;
 import javax.ejb.Stateless;
-import javax.faces.bean.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -50,5 +49,11 @@ public class JobExeResource {
             }
         }
         return job;
+    }
+    
+    @DELETE
+    public void deleteJob(@PathParam("unit") String unit, @PathParam("name") String name) {
+        JobExe job = getJob(unit, name, null);
+        if (job != null) em.remove(job);
     }
 }
