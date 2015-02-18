@@ -6,6 +6,7 @@
 package com.doogetha.buildtool.server.db.entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -25,12 +26,15 @@ public class UnitParam implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
+    @Column(length = 64)
     @Id
     private String name;
 
+    @Column(length = 64)
     @Id
     private String unit;
     
+    @Column(length = 2048)
     @NotNull
     private String value;
     
