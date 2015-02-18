@@ -20,11 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "JobExe.findByUnit", query = "SELECT b FROM JobExe b WHERE b.unit=:unit ORDER BY b.lastmodified DESC"),
-    @NamedQuery(name = "JobExe.deleteByUnit", query = "DELETE FROM JobExe b WHERE b.unit=:unit"),
-    @NamedQuery(name = "JobExe.findByUnitAndName", query = "SELECT b FROM JobExe b WHERE b.unit=:unit AND b.name=:name"),
-    @NamedQuery(name = "JobExe.findByUnitAndState", query = "SELECT b FROM JobExe b WHERE b.unit=:unit AND b.state=:state")})
-public class JobExe implements Serializable {
+    @NamedQuery(name = "UnitParam.findByUnitAndName", query = "SELECT b FROM UnitParam b WHERE b.unit=:unit AND b.name=:name")})
+public class UnitParam implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
@@ -35,15 +32,12 @@ public class JobExe implements Serializable {
     private String unit;
     
     @NotNull
-    private String state;
+    private String value;
     
-    @NotNull
-    private long lastmodified;
-
-    public JobExe() {
+    public UnitParam() {
     }
     
-    public JobExe(String name, String unit) {
+    public UnitParam(String name, String unit) {
         this.name = name;
         this.unit = unit;
     }
@@ -64,20 +58,12 @@ public class JobExe implements Serializable {
         this.unit = unit;
     }
 
-    public String getState() {
-        return state;
+    public String getValue() {
+        return value;
     }
 
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public long getLastmodified() {
-        return lastmodified;
-    }
-
-    public void setLastmodified(long lastmodified) {
-        this.lastmodified = lastmodified;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override
@@ -91,17 +77,17 @@ public class JobExe implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof JobExe)) {
+        if (!(object instanceof UnitParam)) {
             return false;
         }
-        JobExe other = (JobExe) object;
+        UnitParam other = (UnitParam) object;
         if (name == null || unit == null) return false;
         return (name.equals(other.getName()) && unit.equals(other.getUnit()));
     }
 
     @Override
     public String toString() {
-        return "com.doogetha.buildtool.server.db.entity.JobExe[ name=" + name + ", unit=" + unit + " ]";
+        return "com.doogetha.buildtool.server.db.entity.UnitParam[ name=" + name + ", unit=" + unit + " ]";
     }
     
 }

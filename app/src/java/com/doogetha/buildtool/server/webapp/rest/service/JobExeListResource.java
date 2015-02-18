@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -35,5 +36,10 @@ public class JobExeListResource {
         } else {
             return em.createNamedQuery("JobExe.findByUnit", JobExe.class).setParameter("unit", unit).getResultList();
         }
+    }
+    
+    @DELETE
+    public void deleteAllJobs(@PathParam("unit") String unit) {
+        em.createNamedQuery("JobExe.deleteByUnit").setParameter("unit", unit).executeUpdate();
     }
 }
