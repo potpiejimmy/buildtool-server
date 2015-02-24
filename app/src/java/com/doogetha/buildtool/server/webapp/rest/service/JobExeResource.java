@@ -20,7 +20,7 @@ import javax.ws.rs.QueryParam;
  *
  * @author thorsten
  */
-@Path("/jobs/{unit}/{name}")
+@Path("/jobs/{unit}/{name:.+}")
 @Stateless
 public class JobExeResource {
     
