@@ -5,9 +5,11 @@
  */
 package com.doogetha.buildtool.server.db.entity;
 
+import com.doogetha.buildtool.server.db.entity.pk.UnitNamePK;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
@@ -18,11 +20,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author thorsten
  */
 @Entity
+@IdClass(UnitNamePK.class)
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "JobExe.findByUnit", query = "SELECT b FROM JobExe b WHERE b.unit=:unit ORDER BY b.lastmodified DESC"),
     @NamedQuery(name = "JobExe.deleteByUnit", query = "DELETE FROM JobExe b WHERE b.unit=:unit"),
-    @NamedQuery(name = "JobExe.findByUnitAndName", query = "SELECT b FROM JobExe b WHERE b.unit=:unit AND b.name=:name"),
     @NamedQuery(name = "JobExe.findByUnitAndState", query = "SELECT b FROM JobExe b WHERE b.unit=:unit AND b.state=:state")})
 public class JobExe implements Serializable {
     

@@ -6,6 +6,7 @@
 package com.doogetha.buildtool.server.webapp.rest.service;
 
 import com.doogetha.buildtool.server.db.entity.UnitParam;
+import com.doogetha.buildtool.server.db.entity.pk.UnitNamePK;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +16,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 
 /**
  *
@@ -31,13 +31,7 @@ public class UnitParamResource {
     @GET
     @Produces({"application/json"})
     public UnitParam getParam(@PathParam("unit") String unit, @PathParam("name") String name) {
-        UnitParam param;
-        try {
-            param = em.createNamedQuery("UnitParam.findByUnitAndName", UnitParam.class).setParameter("unit", unit).setParameter("name", name).getSingleResult();
-        } catch (Exception ex) {
-            param = null;
-        }
-        return param;
+        return em.find(UnitParam.class, new UnitNamePK(unit, name));
     }
     
     @POST

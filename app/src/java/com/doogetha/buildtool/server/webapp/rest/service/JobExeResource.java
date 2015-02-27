@@ -6,6 +6,7 @@
 package com.doogetha.buildtool.server.webapp.rest.service;
 
 import com.doogetha.buildtool.server.db.entity.JobExe;
+import com.doogetha.buildtool.server.db.entity.pk.UnitNamePK;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,12 +31,7 @@ public class JobExeResource {
     @GET
     @Produces({"application/json"})
     public JobExe getJob(@PathParam("unit") String unit, @PathParam("name") String name, @QueryParam("set") String setState) {
-        JobExe job = null;
-        try {
-            job = em.createNamedQuery("JobExe.findByUnitAndName", JobExe.class).setParameter("unit", unit).setParameter("name", name).getSingleResult();
-        } catch (Exception ex) {
-            job = null;
-        }
+        JobExe job = em.find(JobExe.class, new UnitNamePK(unit, name));
         if (setState != null) {
             if (job == null) job = new JobExe(name, unit);
                 
