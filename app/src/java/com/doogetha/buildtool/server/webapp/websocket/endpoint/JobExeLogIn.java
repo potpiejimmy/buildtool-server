@@ -24,7 +24,7 @@ import javax.websocket.server.ServerEndpoint;
  * @author thorsten.liese
  */
 @ServerEndpoint("/ws/exelog/in/{unit}/{name}")
-public class JobExeLogIn extends JobExeLog {
+public class JobExeLogIn {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("unit") String unit, @PathParam("name") String name) {
@@ -34,7 +34,6 @@ public class JobExeLogIn extends JobExeLog {
     @OnClose
     public void onClose(Session session, @PathParam("unit") String unit, @PathParam("name") String name) {
         SessionManager.getInstance(JobExeSession.class).getSession(new UnitNamePK(unit, name)).setPublisher(null);
-        releaseSessionIfDone(unit, name);
     }
 
     @OnMessage

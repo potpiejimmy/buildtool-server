@@ -7,6 +7,8 @@ package com.doogetha.buildtool.server.webapp.rest.service;
 
 import com.doogetha.buildtool.server.db.entity.JobExe;
 import com.doogetha.buildtool.server.db.entity.pk.UnitNamePK;
+import com.doogetha.buildtool.server.webapp.websocket.JobExeSession;
+import com.doogetha.buildtool.server.webapp.websocket.SessionManager;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -51,5 +53,7 @@ public class JobExeResource {
     public void deleteJob(@PathParam("unit") String unit, @PathParam("name") String name) {
         JobExe job = getJob(unit, name, null);
         if (job != null) em.remove(job);
+        // remove associated log session sockets
+        SessionManager.getInstance(JobExeSession.class).removeSession(new UnitNamePK(unit, name));
     }
 }

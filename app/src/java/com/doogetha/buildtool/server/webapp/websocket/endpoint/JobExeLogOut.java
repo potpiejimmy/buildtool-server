@@ -24,7 +24,7 @@ import javax.websocket.server.ServerEndpoint;
  * @author thorsten.liese
  */
 @ServerEndpoint("/ws/exelog/out/{unit}/{name}")
-public class JobExeLogOut extends JobExeLog {
+public class JobExeLogOut {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("unit") String unit, @PathParam("name") String name) {
@@ -38,7 +38,6 @@ public class JobExeLogOut extends JobExeLog {
     @OnClose
     public void onClose(Session session, @PathParam("unit") String unit, @PathParam("name") String name) {
         SessionManager.getInstance(JobExeSession.class).getSession(new UnitNamePK(unit, name)).setSubscriber(null);
-        releaseSessionIfDone(unit, name);
     }
 
     @OnMessage
