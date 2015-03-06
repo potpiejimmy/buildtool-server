@@ -30,9 +30,8 @@ public class JobExeLogOut {
     public void onOpen(Session session, @PathParam("unit") String unit, @PathParam("name") String name) {
         JobExeSession jsession = SessionManager.getInstance(JobExeSession.class).getSession(new UnitNamePK(unit, name));
         jsession.setSubscriber(session);
-        // send last cached message to new subscriber:
-        if (jsession.getLastMessage() != null) 
-            jsession.publish(jsession.getLastMessage());
+        // send last cached messages to new subscriber:
+        jsession.resendRecentMessages();
     }
 
     @OnClose

@@ -7,6 +7,8 @@ package com.doogetha.buildtool.server.webapp.websocket;
 
 import com.doogetha.buildtool.server.webapp.websocket.endpoint.JobExeLogIn;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.websocket.CloseReason;
@@ -19,19 +21,11 @@ import javax.websocket.Session;
  */
 public class JobExeSession {
 
-    private String lastMessage = null;
+    private final List<String> lastMessages = new LinkedList<>();
     
     private Session publisher = null;
     
     private Session subscriber = null;
-
-    public synchronized String getLastMessage() {
-        return lastMessage;
-    }
-
-    public synchronized void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
-    }
 
     public synchronized Session getPublisher() {
         return publisher;
@@ -61,8 +55,21 @@ public class JobExeSession {
         }
     }
     
+    protected synchronized void addRecentMessage(String message) {
+        lastMessages.add(message);
+        if (lastMessages.size()>10) lastMessages.remove(0);
+    }
+    
     public synchronized void publish(String message) {
-        this.lastMessage = message;
+        addRecentMessage(message);
+        sendMessage(message);
+    }
+    
+    public synchronized void resendRecentMessages() {
+        for (String message : lastMessages) sendMessage(message);
+    }
+    
+    protected synchronized void sendMessage(String message) {
         if (subscriber != null && subscriber.isOpen()) {
             try {
                 subscriber.getBasicRemote().sendText(message);
