@@ -29,7 +29,7 @@ public class JobExeResource {
     
     @PersistenceContext(unitName = "buildtool-warPU")
     private EntityManager em;
-
+    
     @GET
     @Produces({"application/json"})
     public JobExe getJob(@PathParam("unit") String unit, @PathParam("name") String name, @QueryParam("set") String setState) {
@@ -44,6 +44,12 @@ public class JobExeResource {
                 em.merge(job);
             } else {
                 em.persist(job);
+            }
+            if (setState.equals("pending")) {
+                // notify all about new pending jobs
+                synchronized (JobExeListResource.GLOBAL_NOTIFIER) { 
+                    JobExeListResource.GLOBAL_NOTIFIER.notifyAll();
+                }
             }
         }
         return job;
