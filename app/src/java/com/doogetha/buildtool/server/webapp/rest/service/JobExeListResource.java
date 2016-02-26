@@ -35,6 +35,7 @@ public class JobExeListResource {
     protected final static Map<String,Object> POLLING_NOTIFIERS = new HashMap<>();
 
     public static Object getPollingSemaphore(String unit) {
+        unit = unit.toLowerCase();
         synchronized (POLLING_NOTIFIERS) {
             Object semaphore = POLLING_NOTIFIERS.get(unit);
             if (semaphore == null) {
