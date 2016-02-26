@@ -6,12 +6,9 @@
 package com.doogetha.buildtool.server.webapp.rest.service;
 
 import com.doogetha.buildtool.server.db.entity.JobExe;
-import com.doogetha.buildtool.server.db.entity.pk.UnitNamePK;
-import com.doogetha.buildtool.server.webapp.websocket.JobExeSession;
-import com.doogetha.buildtool.server.webapp.websocket.SessionManager;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import com.doogetha.buildtool.server.ejb.JobExeBean;
+import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -24,42 +21,28 @@ import javax.ws.rs.QueryParam;
  * @author thorsten
  */
 @Path("/jobs/{unit}/{name:.+}")
-@Stateless
+@RequestScoped
 public class JobExeResource {
     
-    @PersistenceContext(unitName = "buildtool-warPU")
-    private EntityManager em;
+    @EJB
+    private JobExeBean jobExeEjb;
     
     @GET
     @Produces({"application/json"})
     public JobExe getJob(@PathParam("unit") String unit, @PathParam("name") String name, @QueryParam("set") String setState) {
-        JobExe job = em.find(JobExe.class, new UnitNamePK(unit, name));
-        if (setState != null) {
-            if (job == null) job = new JobExe(name, unit);
-                
-            job.setState(setState);
-            job.setLastmodified(System.currentTimeMillis());
-            
-            if (em.contains(job)) {
-                em.merge(job);
-            } else {
-                em.persist(job);
-            }
-            if (setState.equals("pending")) {
-                // notify all about new pending jobs
-                synchronized (JobExeListResource.GLOBAL_NOTIFIER) { 
-                    JobExeListResource.GLOBAL_NOTIFIER.notifyAll();
-                }
+        JobExe ret = jobExeEjb.getJob(unit, name, setState);
+        if ("pending".equals(setState)) {
+            // notify about new pending jobs for this unit
+            Object semaphore = JobExeListResource.getPollingSemaphore(unit);
+            synchronized (semaphore) { 
+                semaphore.notifyAll();
             }
         }
-        return job;
+        return ret;
     }
     
     @DELETE
     public void deleteJob(@PathParam("unit") String unit, @PathParam("name") String name) {
-        JobExe job = getJob(unit, name, null);
-        if (job != null) em.remove(job);
-        // remove associated log session sockets
-        SessionManager.getInstance(JobExeSession.class).removeSession(new UnitNamePK(unit, name));
+        jobExeEjb.deleteJob(unit, name);
     }
 }
